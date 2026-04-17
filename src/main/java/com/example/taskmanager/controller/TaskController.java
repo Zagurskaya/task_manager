@@ -1,9 +1,12 @@
 package com.example.taskmanager.controller;
 
 import com.example.taskmanager.enums.TaskStatus;
+import com.example.taskmanager.exception.ValidationException;
 import com.example.taskmanager.mapper.TaskMapper;
-import com.example.taskmanager.model.dto.TaskDto;
-import com.example.taskmanager.model.request.TaskRequest;
+import com.example.taskmanager.model.dto.task.TaskDto;
+import com.example.taskmanager.model.dto.task.UpdateTaskDto;
+import com.example.taskmanager.model.request.task.CreateTaskRequest;
+import com.example.taskmanager.model.request.task.UpdateTaskRequest;
 import com.example.taskmanager.model.response.TaskResponse;
 import com.example.taskmanager.service.TaskService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -15,6 +18,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,10 +49,11 @@ public class TaskController {
                     @ApiResponse(responseCode = "401", description = "Пользователь не авторизован")
             }
     )
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public TaskResponse create(
             @Parameter(description = "Данные для создания задачи")
-            @Valid @RequestBody TaskRequest request,
+            @Valid @RequestBody CreateTaskRequest request,
             Authentication auth) {
 
         TaskDto taskDto = taskService.create(taskMapper.toDto(request), auth);
@@ -64,12 +69,14 @@ public class TaskController {
                             description = "Задача найдена",
                             content = @Content(schema = @Schema(implementation = TaskResponse.class))
                     ),
+                    @ApiResponse(responseCode = "400", description = "Некорректные данные запроса"),
+                    @ApiResponse(responseCode = "401", description = "Пользователь не авторизован"),
                     @ApiResponse(responseCode = "404", description = "Задача не найдена")
             }
     )
     @GetMapping("/{id}")
     public TaskResponse getById(
-            @Parameter(description = "ID задачи", example = "1")
+            @Parameter(description = "ID задачи")
             @PathVariable("id") Long id) {
 
         TaskDto taskDto = taskService.getById(id);
@@ -84,7 +91,7 @@ public class TaskController {
                     • тему (title)
                     • описание (description)
                     • статус (TODO, IN_PROGRESS, DONE)
-                    • приоритетность
+                    • приоритетность (LOW, MEDIUM, HIGH)
                     • исполнителя (assignee)
                     
                     Требуется авторизация. Доступ разрешён ролям USER и ADMIN.
@@ -107,12 +114,15 @@ public class TaskController {
             @Parameter(description = "ID задачи", example = "1")
             @PathVariable("id") Long id,
             @Parameter(description = "Данные для обновления задачи")
-            @Valid @RequestBody TaskRequest request,
+            @Valid @RequestBody UpdateTaskRequest request,
             Authentication auth) {
 
-        TaskDto taskDto = taskMapper.toDto(request);
-        TaskDto updateTaskDto = taskService.update(id, taskDto, auth);
-        return taskMapper.toTaskResponse(updateTaskDto);
+        if (request.isEmpty()) {
+            throw new ValidationException("все поля запроса на обновление пусты");
+        }
+        UpdateTaskDto updateTaskDto = taskMapper.toDto(request);
+        TaskDto taskDto = taskService.update(id, updateTaskDto, auth);
+        return taskMapper.toTaskResponse(taskDto);
     }
 
     @Operation(
@@ -145,15 +155,15 @@ public class TaskController {
                     • статусу
                     • ID автора
                     • ID исполнителя
-                    
-                    Все параметры необязательны.
                     """,
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "Список задач",
+                            description = "Список задач по фильтру",
                             content = @Content(array = @ArraySchema(schema = @Schema(implementation = TaskResponse.class)))
-                    )
+
+                    ),
+                    @ApiResponse(responseCode = "400", description = "Некорректные данные запроса"),
             }
     )
     @GetMapping
@@ -168,6 +178,9 @@ public class TaskController {
             @Parameter(description = "ID исполнителя задачи")
             @RequestParam(value = "assigneeId", required = false) Long assigneeId) {
 
+        if (status == null && authorId == null && assigneeId == null) {
+            throw new ValidationException("Не задан фильтр запроса");
+        }
         List<TaskDto> taskDtos = taskService.getByParam(status, authorId, assigneeId);
         return taskDtos.stream()
                 .map(taskMapper::toTaskResponse)

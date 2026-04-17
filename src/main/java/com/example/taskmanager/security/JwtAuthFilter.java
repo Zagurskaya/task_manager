@@ -1,6 +1,8 @@
 package com.example.taskmanager.security;
 
-import com.example.taskmanager.exception.AccessDeniedExceptionCustom;
+import static jakarta.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import lombok.RequiredArgsConstructor;
@@ -19,10 +21,11 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
     private final CustomUserDetailsService userDetailsService;
+
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getServletPath();
-        return path.startsWith("/api/auth/")
+        return path.startsWith("/api/auth")
                 || path.startsWith("/swagger-ui/")
                 || path.startsWith("/v3/api-docs")
                 || path.startsWith("/swagger")
@@ -38,13 +41,19 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String authHeader = request.getHeader("Authorization");
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            throw new AccessDeniedExceptionCustom("invalid Authorization header");
+            response.setStatus(SC_UNAUTHORIZED);
+            response.setContentType(APPLICATION_JSON_VALUE);
+            response.getWriter().write("{ \"error\": \" invalid Authorization header\"}");
+            return;
         }
 
         String token = authHeader.substring(7);
 
         if (!jwtService.validateToken(token)) {
-            throw new AccessDeniedExceptionCustom("invalid Authorization token");
+            response.setStatus(SC_UNAUTHORIZED);
+            response.setContentType(APPLICATION_JSON_VALUE);
+            response.getWriter().write("{ \"error\": \" invalid Authorization token\"}");
+            return;
         }
 
         String username = jwtService.extractUsername(token);

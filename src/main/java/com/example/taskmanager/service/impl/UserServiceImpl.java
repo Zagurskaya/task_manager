@@ -1,9 +1,12 @@
 package com.example.taskmanager.service.impl;
 
+import static com.example.taskmanager.constant.ExceptionMessageConstant.USER_NOT_FOUND_BY_EMAIL;
+
 import com.example.taskmanager.enums.Role;
 import com.example.taskmanager.exception.ApplicationException;
 import com.example.taskmanager.mapper.UserMapper;
-import com.example.taskmanager.model.dto.UserDto;
+import com.example.taskmanager.model.dto.user.AuthUserDto;
+import com.example.taskmanager.model.dto.user.RegisterUserDto;
 import com.example.taskmanager.model.entity.User;
 import com.example.taskmanager.repository.UserRepository;
 import com.example.taskmanager.security.JwtService;
@@ -39,12 +42,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public String registerUser(UserDto userDto) {
+    public String registerUser(RegisterUserDto registerUserDto) {
 
-        userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
-        userDto.setRole(Role.USER);
+        registerUserDto.setPassword(passwordEncoder.encode(registerUserDto.getPassword()));
 
-        User user = userRepository.save(userMapper.toEntity(userDto));
+        User user = userRepository.save(userMapper.toEntity(registerUserDto, Role.USER));
 
         return jwtService.generateToken(user.getEmail(), user.getRole());
 
@@ -52,12 +54,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public String getLogin(UserDto dto) {
+    public String getLogin(AuthUserDto dto) {
 
         authManager.authenticate(new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getPassword()));
 
         User user = userRepository.findByEmail(dto.getEmail())
-                .orElseThrow(() -> new ApplicationException("User not found"));
+                .orElseThrow(() -> new ApplicationException(USER_NOT_FOUND_BY_EMAIL.formatted(dto.getEmail())));
 
         return jwtService.generateToken(user.getEmail(), user.getRole());
     }

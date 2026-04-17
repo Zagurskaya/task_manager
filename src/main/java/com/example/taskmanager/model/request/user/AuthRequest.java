@@ -1,11 +1,11 @@
-package com.example.taskmanager.model.request;
+package com.example.taskmanager.model.request.user;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
-public class LoginRequest {
+public class AuthRequest {
 
     @NotBlank
     @Email

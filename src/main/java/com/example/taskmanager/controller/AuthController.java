@@ -1,10 +1,12 @@
 package com.example.taskmanager.controller;
 
+import static com.example.taskmanager.constant.ExceptionMessageConstant.EMAIL_ALREADY_EXISTS;
+
 import com.example.taskmanager.exception.ValidationException;
 import com.example.taskmanager.mapper.UserMapper;
 import com.example.taskmanager.model.response.AuthResponse;
-import com.example.taskmanager.model.request.LoginRequest;
-import com.example.taskmanager.model.request.RegisterRequest;
+import com.example.taskmanager.model.request.user.AuthRequest;
+import com.example.taskmanager.model.request.user.RegisterRequest;
 import com.example.taskmanager.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -12,6 +14,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,10 +32,6 @@ public class AuthController {
             description = """
                     Создаёт нового пользователя и возвращает JWT токен.
                     Доступ открыт для всех (не требует авторизации).
-                    
-                    Требования:
-                    • email должен быть уникальным
-                    • пароль должен соответствовать правилам валидации
                     """,
             responses = {
                     @ApiResponse(
@@ -46,6 +45,7 @@ public class AuthController {
                     )
             }
     )
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/register")
     public AuthResponse register(
             @Parameter(description = "Данные для регистрации пользователя")
@@ -53,7 +53,7 @@ public class AuthController {
 
         if (userService.existsByEmail(request.getEmail())) {
 
-            throw new ValidationException("Email already exists");
+            throw new ValidationException(EMAIL_ALREADY_EXISTS);
         }
         String token = userService.registerUser(userMapper.toDto(request));
         return new AuthResponse(token);
@@ -71,20 +71,13 @@ public class AuthController {
                             description = "Успешная авторизация",
                             content = @Content(schema = @Schema(implementation = AuthResponse.class))
                     ),
-                    @ApiResponse(
-                            responseCode = "400",
-                            description = "Некорректные данные запроса"
-                    ),
-                    @ApiResponse(
-                            responseCode = "401",
-                            description = "Неверный email или пароль"
-                    )
+                    @ApiResponse(responseCode = "401", description = "Неверный email или пароль")
             }
     )
     @PostMapping("/login")
     public AuthResponse login(
             @Parameter(description = "Данные для входа пользователя")
-            @Validated @RequestBody LoginRequest request) {
+            @Validated @RequestBody AuthRequest request) {
 
         String token = userService.getLogin(userMapper.toDto(request));
 

@@ -1,10 +1,17 @@
 package com.example.taskmanager.service.impl;
 
+import static com.example.taskmanager.constant.ExceptionMessageConstant.NOT_PERMISSION_FOR_DELETE_TASK;
+import static com.example.taskmanager.constant.ExceptionMessageConstant.NOT_PERMISSION_FOR_UPDATE_TASK;
+import static com.example.taskmanager.constant.ExceptionMessageConstant.TASK_NOT_FOUND_BY_ID;
+import static com.example.taskmanager.constant.ExceptionMessageConstant.USER_NOT_FOUND_BY_EMAIL;
+
 import com.example.taskmanager.enums.Role;
 import com.example.taskmanager.exception.ApplicationException;
 import com.example.taskmanager.exception.NotFoundException;
 import com.example.taskmanager.mapper.TaskMapper;
-import com.example.taskmanager.model.dto.TaskDto;
+import com.example.taskmanager.model.dto.task.CreateTaskDto;
+import com.example.taskmanager.model.dto.task.TaskDto;
+import com.example.taskmanager.model.dto.task.UpdateTaskDto;
 import com.example.taskmanager.model.entity.Task;
 import com.example.taskmanager.model.entity.User;
 import com.example.taskmanager.repository.TaskRepository;
@@ -29,10 +36,10 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     @Transactional
-    public TaskDto create(TaskDto dto, Authentication auth) {
+    public TaskDto create(CreateTaskDto dto, Authentication auth) {
 
         User author = userRepository.findByEmail(auth.getName())
-                .orElseThrow(() -> new NotFoundException("User not found by email %s".formatted(auth.getName())));
+                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_BY_EMAIL.formatted(auth.getName())));
 
         Task task = taskMapper.toEntity(dto.getTitle(),
                 dto.getDescription(),
@@ -50,21 +57,21 @@ public class TaskServiceImpl implements TaskService {
     public TaskDto getById(Long id) {
 
         Task task = taskRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Task not found by id %s".formatted(id)));
+                .orElseThrow(() -> new NotFoundException(TASK_NOT_FOUND_BY_ID.formatted(id)));
         return taskMapper.toDto(task);
     }
 
     @Override
     @Transactional
-    public TaskDto update(Long id, TaskDto taskDto, Authentication auth) {
+    public TaskDto update(Long id, UpdateTaskDto taskDto, Authentication auth) {
 
         Task task = taskRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Task not found by id %s".formatted(id)));
+                .orElseThrow(() -> new NotFoundException(TASK_NOT_FOUND_BY_ID.formatted(id)));
         User user = userRepository.findByEmail(auth.getName())
-                .orElseThrow(() -> new NotFoundException("User not found by email %s".formatted(auth.getName())));
+                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_BY_EMAIL.formatted(auth.getName())));
 
         if (!task.getAuthor().getId().equals(user.getId()) && user.getRole() != Role.ADMIN) {
-            throw new ApplicationException("Not permission for update task");
+            throw new ApplicationException(NOT_PERMISSION_FOR_UPDATE_TASK);
         }
 
         if (taskDto.getTitle() != null) {
@@ -93,11 +100,11 @@ public class TaskServiceImpl implements TaskService {
     public void deleteById(Long id, Authentication auth) {
 
         Task task = taskRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Task not found by id %s".formatted(id)));
+                .orElseThrow(() -> new NotFoundException(TASK_NOT_FOUND_BY_ID.formatted(id)));
         User user = userRepository.findByEmail(auth.getName())
-                .orElseThrow(() -> new NotFoundException("User not found by email %s".formatted(auth.getName())));
+                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_BY_EMAIL.formatted(auth.getName())));
         if (!task.getAuthor().getId().equals(user.getId()) && user.getRole() != Role.ADMIN) {
-            throw new ApplicationException("Not permission for delete task");
+            throw new ApplicationException(NOT_PERMISSION_FOR_DELETE_TASK);
         }
         taskRepository.delete(task);
     }

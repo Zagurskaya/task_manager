@@ -1,0 +1,55 @@
+### Maven ###
+target/
+!.mvn/wrapper/maven-wrapper.jar
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.properties
+
+### IntelliJ IDEA ###
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+### Logs ###
+*.log
+logs/
+ncu_test_task.log
+
+### OS files ###
+.DS_Store
+Thumbs.db
+
+### Java ###
+*.class
+*.jar
+*.war
+*.ear
+
+### Spring Boot ###
+application-*.yml
+application-*.properties
+
+### Docker ###
+docker/*.env
+docker/*.log
+docker/*.pid
+
+### Environment ###
+.env
+*.env.local
+
+### Build artifacts ###
+*.orig
+*.rej
+
+### Liquibase ###
+*.lock
+
+### MapStruct generated sources ###
+target/generated-sources/
+target/generated-test-sources/
+
+### Test reports ###
+surefire-reports/
+failsafe-reports/

@@ -1,4 +1,4 @@
-package com.example.taskmanager.model.dto;
+package com.example.taskmanager.model.dto.user;
 
 import com.example.taskmanager.enums.Role;
 import jakarta.persistence.EnumType;
