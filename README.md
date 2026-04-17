@@ -109,3 +109,8 @@ GET /api/tasks?assigneeId=2
 - All users register as USER.
 - To make ADMIN you can update role directly in DB.
 
+
+mvn clean package -DskipTests   
+docker compose -f docker/docker-compose.yml --env-file docker/docker.env up -d --build
+docker compose -f docker/docker-compose.yml down -v
+
