@@ -1,116 +1,83 @@
-# Task Manager API
+## Task manager service
 
-RESTful Task Manager service (Spring Boot + JWT)
+### Основное описание
+Веб‑приложение предоставляет возможность создавать задачи, просматривать их, обновлять и удалять.
+Каждый пользователь может управлять только своими задачами, а администратор — всеми задачами в системе.
+Авторизация реализована через JWT‑токены.
 
-## Features
-- Registration & Login (JWT)
-- Role-based access (USER, ADMIN)
-- Task CRUD
-- Update/Delete allowed only for author or ADMIN
-- Filtering tasks by status / authorId / assigneeId
-- Swagger UI
-- H2 in-memory DB
-- JUnit5 tests
+____
+### Guest
+* **Anybody scope**
 
-## Tech Stack
-- Java 17
-- Spring Boot 3.x
-- Spring Security
-- JWT
-- Spring Data JPA
-- H2 Database
-- Swagger OpenAPI
-- JUnit5
+    * **Регистрация**
+        * Создание нового аккаунта
 
----
+    * **Авторизация**
+        * Авторизация (получение JWT‑токена)
+        * Просмотр Swagger‑документации
 
-## Run project
+### User
 
-```bash
-mvn clean install
-mvn spring-boot:run
-```
+Пользователь имеет активную роль: **USER**
 
----
+* **User's scope**
 
-## Swagger
+    * Просмотр всех своих задач
+    * Создание новой задачи
+    * Обновление своей задачи
+    * Удаление своей задачи
+    * Фильтрация задач по параметрам: статус, автор, исполнитель
 
-http://localhost:8080/swagger-ui/index.html
+### Admin
 
----
+Пользователь имеет активную роль: **ADMIN**
 
-## H2 Console
+* **Admin's scope**
 
-http://localhost:8080/h2-console  
-JDBC URL: jdbc:h2:mem:taskdb  
-Login: sa
-
----
-
-## API Examples
-
-### Register
-POST /api/auth/register
-
-```json
-{
-  "username": "user",
-  "email": "user@mail.com",
-  "password": "12345"
-}
-```
-
-### Login
-POST /api/auth/login
-
-```json
-{
-  "email": "user@mail.com",
-  "password": "12345"
-}
-```
-
-Response:
-```json
-{
-  "token": "JWT_TOKEN"
-}
-```
-
----
-
-## Create Task
-POST /api/tasks
-
-Headers:
-Authorization: Bearer JWT_TOKEN
-
-```json
-{
-  "title": "My task",
-  "description": "some description",
-  "status": "TODO",
-  "priority": "HIGH",
-  "assigneeId": null
-}
-```
-
----
-
-## Filter Tasks
-
-GET /api/tasks?status=IN_PROGRESS  
-GET /api/tasks?authorId=1  
-GET /api/tasks?assigneeId=2  
-
----
-
-## Notes
-- All users register as USER.
-- To make ADMIN you can update role directly in DB.
+    * Просмотр всех задач
+    * Создание новой задачи
+    * Обновление всех задач
+    * Удаление любой задачи
+    * Фильтрация задач по параметрам: статус, автор, исполнитель
 
 
-mvn clean package -DskipTests   
-docker compose -f docker/docker-compose.yml --env-file docker/docker.env up -d --build
-docker compose -f docker/docker-compose.yml down -v
+
+
+### Пользователь с правом ADMIN в DB
+ email / password\
+ admin@mail.ru/ admin
+
+____
+### Инструкция по сборке и запуску
+* **Описание **
+
+    * **Минимальные требования**
+        * openjdk-17-jdk
+        * maven
+        * docker
+
+    * **Инструкция по сборке и запуску**
+        * Создание копии репозитория проекта\
+          git clone https://github.com/Zagurskaya/task_manager.git (ветка - master) 
+
+        * Сборка проекта из корня проекта\
+          mvn clean install
+
+        *  Запускаем проект из корня\
+           docker compose -f docker/docker-compose.yml --env-file docker/docker.env up -d --build
+
+        * Project URL\
+          http://localhost:8080/     
+       
+        * Swagger UI\
+          http://localhost:8080/swagger/        
+      
+        * Перечень curl запросов\
+          task_manager_curl.txt/        
+      
+        * Коллекция запросов\
+          task_manager.postman_collection.json/
+
+      *  Остановить и удалить проект из корня проекта\
+         docker compose -f docker/docker-compose.yml down -v
 

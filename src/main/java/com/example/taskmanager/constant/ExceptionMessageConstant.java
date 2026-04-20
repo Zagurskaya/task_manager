@@ -10,6 +10,8 @@ public class ExceptionMessageConstant {
 
     public static final String USER_NOT_FOUND_BY_EMAIL = "Не найден пользователь по email %s ";
 
+    public static final String USER_NOT_FOUND_BY_ID = "Не найден пользователь по id %s ";
+
     public static final String NOT_PERMISSION_FOR_UPDATE_TASK = "Нет прав для обновления задачи ";
 
     public static final String NOT_PERMISSION_FOR_DELETE_TASK = "Нет прав для удаления задачи ";
@@ -17,5 +19,9 @@ public class ExceptionMessageConstant {
     public static final String EMAIL_ALREADY_EXISTS = "Email уже существует";
 
     public static final String NOT_VALID_EMAIL_OR_PASSWORD = "Неверный email или пароль";
+
+    public static final String EMPTY_UPDATE_REQUEST = "Все поля запроса на обновление пусты";
+
+    public static final String EMPTY_TASK_FILTER = "Не задан фильтр запроса";
 
 }

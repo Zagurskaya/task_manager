@@ -1,5 +1,8 @@
 package com.example.taskmanager.security;
 
+import static jakarta.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
+
+import com.example.taskmanager.utils.ErrorWriterUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -15,15 +18,6 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
                          HttpServletResponse response,
                          AuthenticationException authException) throws IOException {
 
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        response.setContentType("application/json");
-
-        response.getWriter().write("""
-            {
-              "error": "Unauthorized",
-              "message": "%s",
-              "code": 401
-            }
-            """.formatted(authException.getMessage()));
+        ErrorWriterUtil.write(response, SC_UNAUTHORIZED, "Unauthorized", authException.getMessage());
     }
 }

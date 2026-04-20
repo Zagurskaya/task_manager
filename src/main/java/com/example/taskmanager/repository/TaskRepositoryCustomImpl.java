@@ -20,7 +20,7 @@ public class TaskRepositoryCustomImpl implements TaskRepositoryCustom {
     private final EntityManager entityManager;
 
     @Override
-    public List<Task> findByParams(String status, Long authorId, Long assigneeId) {
+    public List<Task> findByParams(TaskStatus status, Long authorId, Long assigneeId) {
 
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Task> query = cb.createQuery(Task.class);
@@ -29,7 +29,7 @@ public class TaskRepositoryCustomImpl implements TaskRepositoryCustom {
         List<Predicate> predicates = new ArrayList<>();
 
         if (status != null) {
-            predicates.add(cb.equal(root.get("status"), TaskStatus.valueOf(status)));
+            predicates.add(cb.equal(root.get("status"), status));
         }
 
         if (authorId != null) {

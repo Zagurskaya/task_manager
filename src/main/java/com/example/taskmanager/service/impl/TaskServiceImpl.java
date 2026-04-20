@@ -4,8 +4,10 @@ import static com.example.taskmanager.constant.ExceptionMessageConstant.NOT_PERM
 import static com.example.taskmanager.constant.ExceptionMessageConstant.NOT_PERMISSION_FOR_UPDATE_TASK;
 import static com.example.taskmanager.constant.ExceptionMessageConstant.TASK_NOT_FOUND_BY_ID;
 import static com.example.taskmanager.constant.ExceptionMessageConstant.USER_NOT_FOUND_BY_EMAIL;
+import static com.example.taskmanager.constant.ExceptionMessageConstant.USER_NOT_FOUND_BY_ID;
 
 import com.example.taskmanager.enums.Role;
+import com.example.taskmanager.enums.TaskStatus;
 import com.example.taskmanager.exception.ApplicationException;
 import com.example.taskmanager.exception.NotFoundException;
 import com.example.taskmanager.mapper.TaskMapper;
@@ -19,12 +21,10 @@ import com.example.taskmanager.repository.UserRepository;
 import com.example.taskmanager.service.TaskService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TaskServiceImpl implements TaskService {
@@ -38,8 +38,7 @@ public class TaskServiceImpl implements TaskService {
     @Transactional
     public TaskDto create(CreateTaskDto dto, Authentication auth) {
 
-        User author = userRepository.findByEmail(auth.getName())
-                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_BY_EMAIL.formatted(auth.getName())));
+        User author = getCurrentUser(auth.getName());
 
         Task task = taskMapper.toEntity(dto.getTitle(),
                 dto.getDescription(),
@@ -67,12 +66,9 @@ public class TaskServiceImpl implements TaskService {
 
         Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(TASK_NOT_FOUND_BY_ID.formatted(id)));
-        User user = userRepository.findByEmail(auth.getName())
-                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_BY_EMAIL.formatted(auth.getName())));
+        User user = getCurrentUser(auth.getName());
 
-        if (!task.getAuthor().getId().equals(user.getId()) && user.getRole() != Role.ADMIN) {
-            throw new ApplicationException(NOT_PERMISSION_FOR_UPDATE_TASK);
-        }
+        checkUpdatePermission(task, user);
 
         if (taskDto.getTitle() != null) {
             task.setTitle(taskDto.getTitle());
@@ -87,8 +83,9 @@ public class TaskServiceImpl implements TaskService {
             task.setPriority(taskDto.getPriority());
         }
         if (taskDto.getAssignee() != null) {
-            User assignee = userRepository.findById(taskDto.getAssignee().getId())
-                    .orElseThrow(() -> new NotFoundException("Assignee not found"));
+            Long assigneeId = taskDto.getAssignee().getId();
+            User assignee = userRepository.findById(assigneeId)
+                    .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_BY_ID.formatted(assigneeId)));
             task.setAssignee(assignee);
         }
 
@@ -101,8 +98,7 @@ public class TaskServiceImpl implements TaskService {
 
         Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(TASK_NOT_FOUND_BY_ID.formatted(id)));
-        User user = userRepository.findByEmail(auth.getName())
-                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_BY_EMAIL.formatted(auth.getName())));
+        User user = getCurrentUser(auth.getName());
         if (!task.getAuthor().getId().equals(user.getId()) && user.getRole() != Role.ADMIN) {
             throw new ApplicationException(NOT_PERMISSION_FOR_DELETE_TASK);
         }
@@ -111,11 +107,23 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<TaskDto> getByParam(String status, Long authorId, Long assigneeId) {
+    public List<TaskDto> getByParam(TaskStatus status, Long authorId, Long assigneeId) {
 
         return taskRepository.findByParams(status, authorId, assigneeId)
                 .stream()
                 .map(taskMapper::toDto)
                 .toList();
+    }
+
+    private User getCurrentUser(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_BY_EMAIL.formatted(email)));
+    }
+
+    private void checkUpdatePermission(Task task, User user) {
+
+        if (!task.getAuthor().getId().equals(user.getId()) && user.getRole() != Role.ADMIN) {
+            throw new ApplicationException(NOT_PERMISSION_FOR_UPDATE_TASK);
+        }
     }
 }

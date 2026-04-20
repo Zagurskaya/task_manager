@@ -1,5 +1,8 @@
 package com.example.taskmanager.security;
 
+import static jakarta.servlet.http.HttpServletResponse.SC_FORBIDDEN;
+
+import com.example.taskmanager.utils.ErrorWriterUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -14,16 +17,6 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
     public void handle(HttpServletRequest request,
                        HttpServletResponse response,
                        AccessDeniedException ex) throws IOException {
-
-        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-        response.setContentType("application/json");
-
-        response.getWriter().write("""
-            {
-              "error": "Forbidden",
-              "message": "%s",
-              "code": 403
-            }
-            """.formatted(ex.getMessage()));
+        ErrorWriterUtil.write(response, SC_FORBIDDEN, "Forbidden", ex.getMessage());
     }
 }

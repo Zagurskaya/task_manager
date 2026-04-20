@@ -3,7 +3,6 @@ package com.example.taskmanager.service.impl;
 import static com.example.taskmanager.constant.ExceptionMessageConstant.USER_NOT_FOUND_BY_EMAIL;
 
 import com.example.taskmanager.enums.Role;
-import com.example.taskmanager.exception.ApplicationException;
 import com.example.taskmanager.mapper.UserMapper;
 import com.example.taskmanager.model.dto.user.AuthUserDto;
 import com.example.taskmanager.model.dto.user.RegisterUserDto;
@@ -12,14 +11,13 @@ import com.example.taskmanager.repository.UserRepository;
 import com.example.taskmanager.security.JwtService;
 import com.example.taskmanager.service.UserService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -44,11 +42,16 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public String registerUser(RegisterUserDto registerUserDto) {
 
-        registerUserDto.setPassword(passwordEncoder.encode(registerUserDto.getPassword()));
+        User newUser = User.builder()
+                .username(registerUserDto.getUsername())
+                .email(registerUserDto.getEmail())
+                .password(passwordEncoder.encode(registerUserDto.getPassword()))
+                .role(Role.USER)
+                .build();
 
-        User user = userRepository.save(userMapper.toEntity(registerUserDto, Role.USER));
+        User regUser = userRepository.save(newUser);
 
-        return jwtService.generateToken(user.getEmail(), user.getRole());
+        return jwtService.generateToken(regUser.getEmail(), regUser.getRole());
 
     }
 
@@ -59,7 +62,7 @@ public class UserServiceImpl implements UserService {
         authManager.authenticate(new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getPassword()));
 
         User user = userRepository.findByEmail(dto.getEmail())
-                .orElseThrow(() -> new ApplicationException(USER_NOT_FOUND_BY_EMAIL.formatted(dto.getEmail())));
+                .orElseThrow(() -> new UsernameNotFoundException(USER_NOT_FOUND_BY_EMAIL.formatted(dto.getEmail())));
 
         return jwtService.generateToken(user.getEmail(), user.getRole());
     }

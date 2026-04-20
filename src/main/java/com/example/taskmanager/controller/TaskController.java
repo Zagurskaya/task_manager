@@ -1,5 +1,8 @@
 package com.example.taskmanager.controller;
 
+import static com.example.taskmanager.constant.ExceptionMessageConstant.EMPTY_TASK_FILTER;
+import static com.example.taskmanager.constant.ExceptionMessageConstant.EMPTY_UPDATE_REQUEST;
+
 import com.example.taskmanager.enums.TaskStatus;
 import com.example.taskmanager.exception.ValidationException;
 import com.example.taskmanager.mapper.TaskMapper;
@@ -114,11 +117,11 @@ public class TaskController {
             @Parameter(description = "ID задачи", example = "1")
             @PathVariable("id") Long id,
             @Parameter(description = "Данные для обновления задачи")
-            @Valid @RequestBody UpdateTaskRequest request,
+            @RequestBody UpdateTaskRequest request,
             Authentication auth) {
 
         if (request.isEmpty()) {
-            throw new ValidationException("все поля запроса на обновление пусты");
+            throw new ValidationException(EMPTY_UPDATE_REQUEST);
         }
         UpdateTaskDto updateTaskDto = taskMapper.toDto(request);
         TaskDto taskDto = taskService.update(id, updateTaskDto, auth);
@@ -172,14 +175,14 @@ public class TaskController {
                     description = "Статус задачи (TODO, IN_PROGRESS, DONE)",
                     schema = @Schema(implementation = TaskStatus.class)
             )
-            @RequestParam(value = "status", required = false) String status,
+            @RequestParam(value = "status", required = false) TaskStatus status,
             @Parameter(description = "ID автора задачи")
             @RequestParam(value = "authorId", required = false) Long authorId,
             @Parameter(description = "ID исполнителя задачи")
             @RequestParam(value = "assigneeId", required = false) Long assigneeId) {
 
         if (status == null && authorId == null && assigneeId == null) {
-            throw new ValidationException("Не задан фильтр запроса");
+            throw new ValidationException(EMPTY_TASK_FILTER);
         }
         List<TaskDto> taskDtos = taskService.getByParam(status, authorId, assigneeId);
         return taskDtos.stream()

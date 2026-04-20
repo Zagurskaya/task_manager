@@ -11,6 +11,7 @@ import com.example.taskmanager.exception.AccessDeniedExceptionCustom;
 import com.example.taskmanager.exception.ApplicationException;
 import com.example.taskmanager.exception.NotFoundException;
 import com.example.taskmanager.exception.ValidationException;
+import com.example.taskmanager.model.response.ErrorResponse;
 import java.util.LinkedHashMap;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -25,19 +26,18 @@ public class ExceptionAdviceController {
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<?> handleNotFound(NotFoundException ex) {
-        return ResponseEntity.status(NOT_FOUND).body(Map.of("error", ex.getMessage()));
+        return build(NOT_FOUND.value(), NOT_FOUND.getReasonPhrase(), ex.getMessage());
     }
 
     @ExceptionHandler(AccessDeniedExceptionCustom.class)
     public ResponseEntity<?> handleDenied(AccessDeniedExceptionCustom ex) {
-        return ResponseEntity.status(FORBIDDEN).body(Map.of("error", ex.getMessage()));
+        return build(FORBIDDEN.value(), FORBIDDEN.getReasonPhrase(), ex.getMessage());
     }
 
     @ExceptionHandler(ValidationException.class)
     public ResponseEntity<?> handleValidation(ValidationException ex) {
-        return ResponseEntity.status(BAD_REQUEST).body(Map.of("error", ex.getMessage()));
+        return build(BAD_REQUEST.value(), "Validation Error", ex.getMessage());
     }
-
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(BAD_REQUEST)
@@ -57,17 +57,27 @@ public class ExceptionAdviceController {
 
     @ExceptionHandler({BadCredentialsException.class, UsernameNotFoundException.class})
     public ResponseEntity<?> handleBadEmailAndPassword(BadCredentialsException ex) {
-        return ResponseEntity.status(UNAUTHORIZED).body(Map.of("error", NOT_VALID_EMAIL_OR_PASSWORD));
+        return build(UNAUTHORIZED.value(), UNAUTHORIZED.getReasonPhrase(), NOT_VALID_EMAIL_OR_PASSWORD);
     }
 
     @ExceptionHandler(ApplicationException.class)
     public ResponseEntity<?> handleApplication(ApplicationException ex) {
-        return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(Map.of("error", ex.getMessage()));
+        return build(INTERNAL_SERVER_ERROR.value(), "Application Error", ex.getMessage());
     }
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<?> handleRuntime(RuntimeException ex) {
-        return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(Map.of("error", ex.getMessage()));
+        return build(INTERNAL_SERVER_ERROR.value(), "Internal Error", ex.getMessage());
+    }
+
+    private ResponseEntity<ErrorResponse> build(int status, String error, String message) {
+
+        return ResponseEntity.status(status)
+                .body(ErrorResponse.builder()
+                        .error(error)
+                        .message(message)
+                        .code(status)
+                        .build());
     }
 }
 

@@ -13,10 +13,10 @@ logging:
 
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/postgres_ncu
     driver-class-name: org.postgresql.Driver
-    username: erp
-    password: erp
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/taskmanager}
+    username: ${SPRING_DATASOURCE_USERNAME:taskmanager}
+    password: ${SPRING_DATASOURCE_PASSWORD:taskmanager}
   liquibase:
     change-log: classpath:/db/changelog.xml
     enabled: true

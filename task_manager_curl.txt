@@ -1,0 +1,67 @@
+postman request POST 'http://localhost:8080/api/auth/register' \
+  --header 'Session-ID: 541d0734-b7b1-4431-ae9e-85bb83b47878' \
+  --header 'Content-Type: application/json' \
+  --body '{
+  "username": "username1",
+  "email": "username1@mail.ru",
+  "password": "username1"
+}'
+
+postman request POST 'http://localhost:8080/api/auth/login' \
+  --header 'Session-ID: 541d0734-b7b1-4431-ae9e-85bb83b47878' \
+  --header 'Content-Type: application/json' \
+  --body '{
+  "email": "username1@mail.ru",
+  "password": "username1"
+}'
+
+postman request POST 'http://localhost:8080/api/auth/login' \
+  --header 'Session-ID: 541d0734-b7b1-4431-ae9e-85bb83b47878' \
+  --header 'Content-Type: application/json' \
+  --body '{
+  "email": "admin@mail.ru",
+  "password": "admin"
+}'
+
+postman request POST 'http://localhost:8080/api/tasks' \
+  --header 'Session-ID: 541d0734-b7b1-4431-ae9e-85bb83b47878' \
+  --header 'Content-Type: application/json' \
+  --header 'Authorization: Bearer token' \
+  --body '{
+  "title": "title1",
+  "description": "description1",
+  "status": "IN_PROGRESS",
+  "priority": "MEDIUM"
+}' \
+  --auth-bearer-token 'token'
+
+postman request 'http://localhost:8080/api/tasks/1' \
+  --header 'Session-ID: 541d0734-b7b1-4431-ae9e-85bb83b47878' \
+  --header 'Authorization: Bearer token' \
+  --body '' \
+  --auth-bearer-token 'token'
+
+postman request PUT 'http://localhost:8080/api/tasks/1' \
+  --header 'Session-ID: 541d0734-b7b1-4431-ae9e-85bb83b47878' \
+  --header 'Content-Type: application/json' \
+  --header 'Authorization: Bearer token' \
+  --body '{
+  "title": "title11",
+  "description": "description11",
+  "status": "TODO",
+  "priority": "LOW"
+}' \
+  --auth-bearer-token 'token'
+
+postman request DELETE 'http://localhost:8080/api/tasks/1' \
+  --header 'Session-ID: 541d0734-b7b1-4431-ae9e-85bb83b47878' \
+  --header 'Authorization: Bearer token' \
+  --body '' \
+  --auth-bearer-token 'token'
+
+
+postman request 'http://localhost:8080/api/tasks?status=TODO' \
+  --header 'Session-ID: 541d0734-b7b1-4431-ae9e-85bb83b47878' \
+  --header 'Authorization: Bearer token' \
+  --body '' \
+  --auth-bearer-token 'token'

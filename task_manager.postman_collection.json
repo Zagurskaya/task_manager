@@ -1,0 +1,632 @@
+{
+  "info": {
+    "_postman_id": "5dcb6431-38f8-4c80-b2e4-fa572eccb167",
+    "name": "test_task",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "9018404"
+  },
+  "item": [
+    {
+      "name": "ncu",
+      "item": [
+        {
+          "name": "auth",
+          "item": [
+            {
+              "name": "http://localhost:8080/api/auth/register",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      ""
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "// Access response body",
+                      "// use .json() for JSON responses",
+                      "let unk = pm.response.json().uniqueClientNumber",
+                      "let personalNumber = pm.response.json().personalNumber",
+                      "",
+                      "// Set the response as a collection variable",
+                      "pm.collectionVariables.set('unk', unk)",
+                      "pm.collectionVariables.set('personalNumber', personalNumber)"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Session-ID",
+                    "value": "541d0734-b7b1-4431-ae9e-85bb83b47878"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"username\": \"username1\",\r\n  \"email\": \"username1@mail.ru\",\r\n  \"password\": \"username1\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "http://localhost:8080/api/auth/register",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "api",
+                    "auth",
+                    "register"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "http://localhost:8080/api/auth/login",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      ""
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "// Access response body",
+                      "// use .json() for JSON responses",
+                      "let unk = pm.response.json().uniqueClientNumber",
+                      "let personalNumber = pm.response.json().personalNumber",
+                      "",
+                      "// Set the response as a collection variable",
+                      "pm.collectionVariables.set('unk', unk)",
+                      "pm.collectionVariables.set('personalNumber', personalNumber)"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Session-ID",
+                    "value": "541d0734-b7b1-4431-ae9e-85bb83b47878"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"email\": \"username1@mail.ru\",\r\n  \"password\": \"username1\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "http://localhost:8080/api/auth/login",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "api",
+                    "auth",
+                    "login"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "http://localhost:8080/api/auth/login Admin",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      ""
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "// Access response body",
+                      "// use .json() for JSON responses",
+                      "let unk = pm.response.json().uniqueClientNumber",
+                      "let personalNumber = pm.response.json().personalNumber",
+                      "",
+                      "// Set the response as a collection variable",
+                      "pm.collectionVariables.set('unk', unk)",
+                      "pm.collectionVariables.set('personalNumber', personalNumber)"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Session-ID",
+                    "value": "541d0734-b7b1-4431-ae9e-85bb83b47878"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"email\": \"admin@mail.ru\",\r\n  \"password\": \"admin\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "http://localhost:8080/api/auth/login",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "api",
+                    "auth",
+                    "login"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "task",
+          "item": [
+            {
+              "name": "http://localhost:8080/api/tasks",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      ""
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "// Access response body",
+                      "// use .json() for JSON responses",
+                      "let unk = pm.response.json().uniqueClientNumber",
+                      "let personalNumber = pm.response.json().personalNumber",
+                      "",
+                      "// Set the response as a collection variable",
+                      "pm.collectionVariables.set('unk', unk)",
+                      "pm.collectionVariables.set('personalNumber', personalNumber)"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VybmFtZTFAbWFpbC5ydSIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzc2NDY3OTAyLCJleHAiOjE3NzY1NTQzMDJ9.iB3BJg9jc_fAPMCon0P5ogGk1qeTH54xUgJZTH7gT4w",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Session-ID",
+                    "value": "541d0734-b7b1-4431-ae9e-85bb83b47878"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"title\": \"title3\",\r\n  \"description\": \"description3\",\r\n  \"status\": \"TODO\",\r\n  \"priority\": \"MEDIUM\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "http://localhost:8080/api/tasks",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "api",
+                    "tasks"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "http://localhost:8080/api/tasks/{id}",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      ""
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "// Access response body",
+                      "// use .json() for JSON responses",
+                      "let unk = pm.response.json().uniqueClientNumber",
+                      "let personalNumber = pm.response.json().personalNumber",
+                      "",
+                      "// Set the response as a collection variable",
+                      "pm.collectionVariables.set('unk', unk)",
+                      "pm.collectionVariables.set('personalNumber', personalNumber)"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VybmFtZTFAbWFpbC5ydSIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzc2NDY3OTAyLCJleHAiOjE3NzY1NTQzMDJ9.iB3BJg9jc_fAPMCon0P5ogGk1qeTH54xUgJZTH7gT4w",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Session-ID",
+                    "value": "541d0734-b7b1-4431-ae9e-85bb83b47878"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "http://localhost:8080/api/tasks/2",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "api",
+                    "tasks",
+                    "2"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "http://localhost:8080/api/tasks/{id}",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      ""
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "// Access response body",
+                      "// use .json() for JSON responses",
+                      "let unk = pm.response.json().uniqueClientNumber",
+                      "let personalNumber = pm.response.json().personalNumber",
+                      "",
+                      "// Set the response as a collection variable",
+                      "pm.collectionVariables.set('unk', unk)",
+                      "pm.collectionVariables.set('personalNumber', personalNumber)"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VybmFtZTJAbWFpbCIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzc2Mzc1NjMxLCJleHAiOjE3NzY0NjIwMzF9.o84vuBvWQvartZEnE-XwO4k-oWxIbEfUpHU_5ogkAwQ",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Session-ID",
+                    "value": "541d0734-b7b1-4431-ae9e-85bb83b47878"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"title\": \"title1112222\",\r\n  \"description\": \"description11\",\r\n  \"status\": \"TODO\",\r\n  \"priority\": \"LOW\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "http://localhost:8080/api/tasks/2",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "api",
+                    "tasks",
+                    "2"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "http://localhost:8080/api/tasks/{id}",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      ""
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "// Access response body",
+                      "// use .json() for JSON responses",
+                      "let unk = pm.response.json().uniqueClientNumber",
+                      "let personalNumber = pm.response.json().personalNumber",
+                      "",
+                      "// Set the response as a collection variable",
+                      "pm.collectionVariables.set('unk', unk)",
+                      "pm.collectionVariables.set('personalNumber', personalNumber)"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VybmFtZTFAbWFpbCIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzc2MzY2NDA0LCJleHAiOjE3NzY0NTI4MDR9.s4-2YOwSLOuhMxXgi18byKTa_SpMBWYFwkCw-OeOjxE",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Session-ID",
+                    "value": "541d0734-b7b1-4431-ae9e-85bb83b47878"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "http://localhost:8080/api/tasks/1",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "api",
+                    "tasks",
+                    "1"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "http://localhost:8080/api/tasks?",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      ""
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "// Access response body",
+                      "// use .json() for JSON responses",
+                      "let unk = pm.response.json().uniqueClientNumber",
+                      "let personalNumber = pm.response.json().personalNumber",
+                      "",
+                      "// Set the response as a collection variable",
+                      "pm.collectionVariables.set('unk', unk)",
+                      "pm.collectionVariables.set('personalNumber', personalNumber)"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VybmFtZTFAbWFpbC5ydSIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzc2NDY3OTAyLCJleHAiOjE3NzY1NTQzMDJ9.iB3BJg9jc_fAPMCon0P5ogGk1qeTH54xUgJZTH7gT4w",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Session-ID",
+                    "value": "541d0734-b7b1-4431-ae9e-85bb83b47878"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "http://localhost:8080/api/tasks?status=TODO",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "api",
+                    "tasks"
+                  ],
+                  "query": [
+                    {
+                      "key": "status",
+                      "value": "TODO"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "unk",
+      "value": ""
+    },
+    {
+      "key": "personalNumber",
+      "value": ""
+    }
+  ]
+}
